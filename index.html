@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Citadel | Conquer the Castle, Master AI</title>
+  <meta name="description" content="Nexus Citadel is a castle-themed, gamified journey through artificial intelligence for high school students. Explore three wings (AI foundations, practical tools and techniques, and ethics) across eight chambers, earn gold, defeat the dragon Vortigrax, and print your certificate of knighthood.">
+  <meta name="theme-color" content="#0b0d1c">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans:wght@400;500;700;800&family=Cinzel:wght@500;600;700;900&family=Cinzel+Decorative:wght@700&family=IBM+Plex+Mono:wght@500&family=Pinyon+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="sky" aria-hidden="true"><div class="stars s1"></div><div class="stars s2"></div></div>
+  <canvas id="emberCanvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <a href="#/home" class="brand" aria-label="Nexus Citadel home">
+      <svg class="brand-crest" viewBox="0 0 48 48" aria-hidden="true">
+        <path d="M24 3 L42 9 V23 C42 34 34 41 24 45 C14 41 6 34 6 23 V9 Z" fill="#1c2038" stroke="#e8b04b" stroke-width="2.5"/>
+        <path d="M14 30 V20 h3 v3 h3 v-5 h8 v5 h3 v-3 h3 V30 Z" fill="#e8b04b"/>
+        <circle cx="24" cy="14" r="2.5" fill="#f6cf7a"/>
+      </svg>
+      <span class="brand-words"><span class="brand-name">Nexus Citadel</span><span class="brand-tag">An Academy of Artificial Intelligence</span></span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="#/home" data-route="home">Home</a>
+      <a href="#/map" data-route="map">Castle Map</a>
+      <a href="#/lab" data-route="lab">AI Lab</a>
+      <a href="#/lexicon" data-route="lexicon">Lexicon</a>
+      <a href="#/honors" data-route="honors">Hall of Honors</a>
+      <a href="#/refs" data-route="refs">References</a>
+    </nav>
+
+    <div class="hud">
+      <div class="sigil-count" id="sigilCount" title="Hidden sigils you have found. Find all ten for a reward.">
+        <span class="sigil-gem" aria-hidden="true"></span>
+        <span class="sigil-text"><strong id="sigilNum">0</strong>/10<small>sigils</small></span>
+      </div>
+      <a href="#/honors" class="purse" id="purse" title="Your gold and rank">
+        <span class="coin" aria-hidden="true"></span>
+        <span class="purse-text"><strong id="hudGold">0</strong><small id="hudRank">Peasant</small></span>
+      </a>
+      <div class="settings">
+        <button type="button" class="icon-btn" id="settingsBtn" aria-label="Settings" aria-expanded="false" aria-controls="settingsMenu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+        <div class="settings-menu" id="settingsMenu" hidden>
+          <button type="button" id="soundToggle">Sound effects: On</button>
+          <button type="button" id="judgeToggle">Evaluator preview: unlock everything</button>
+          <button type="button" id="resetBtn" class="danger">Reset all progress</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <section class="view" id="view-home" aria-labelledby="homeTitle">
+      <div class="hero wrap">
+        <div class="hero-copy">
+          <p class="eyebrow">A quest for curious minds</p>
+          <h1 id="homeTitle" class="hero-title">Learn how AI really works.<br><span>Then beat the dragon.</span></h1>
+          <p class="hero-lead">Nexus Citadel is a castle-themed course about artificial intelligence (AI). The course has three wings and eight chambers. Each chamber contains reading scrolls, a hands-on activity, and a quiz. At the end, you face Vortigrax, a dragon made of false information, and use what you have learned to defeat him.</p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-gold btn-lg" id="enterBtn">Lower the Drawbridge</button>
+            <a class="btn btn-ghost btn-lg" href="#journey">See the journey</a>
+          </div>
+          <ul class="hero-facts">
+            <li><strong>8</strong> chambers</li>
+            <li><strong>8</strong> hands-on activities</li>
+            <li><strong>1</strong> dragon</li>
+            <li><strong>1</strong> certificate to print</li>
+          </ul>
+        </div>
+
+        <div class="hero-scene" aria-hidden="true">
+          <svg viewBox="0 0 600 470" class="castle-scene" id="castleScene">
+            <defs>
+              <radialGradient id="moonGlow"><stop offset="0" stop-color="#fff6d8"/><stop offset=".55" stop-color="#f6e2a8"/><stop offset="1" stop-color="#f6e2a8" stop-opacity="0"/></radialGradient>
+              <linearGradient id="stoneG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3a4170"/><stop offset="1" stop-color="#1f2340"/></linearGradient>
+              <linearGradient id="stoneD" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2c325a"/><stop offset="1" stop-color="#171a31"/></linearGradient>
+              <linearGradient id="roofG" x1="0" x2="1"><stop offset="0" stop-color="#7a1c2e"/><stop offset="1" stop-color="#b3263e"/></linearGradient>
+              <linearGradient id="waterG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#203a6b"/><stop offset="1" stop-color="#0f1a35"/></linearGradient>
+            </defs>
+            <circle cx="470" cy="92" r="80" fill="url(#moonGlow)" opacity=".55"/>
+            <circle cx="470" cy="92" r="40" fill="#f8ecc4"/>
+            <circle cx="456" cy="82" r="7" fill="#e9d79f"/><circle cx="482" cy="104" r="5" fill="#e9d79f"/>
+            <path d="M0 330 L70 250 L130 300 L210 220 L300 300 L390 230 L470 290 L540 240 L600 290 V470 H0 Z" fill="#141831"/>
+            <g class="scene-dragon"><path d="M0 0 c8-8 18-8 22 0 c6-10 16-12 22-6 c-8 0-12 4-16 10 c-4-2-10-2-14 2 c-4-4-9-6-14-6z" fill="#0b0d1c"/>
+              <animateMotion dur="22s" repeatCount="indefinite" path="M-60 120 C 150 40, 350 160, 660 70"/></g>
+            <rect x="0" y="390" width="600" height="80" fill="url(#waterG)"/>
+            <path class="ripples" d="M30 410 h40 M120 430 h60 M240 418 h30 M420 428 h50 M520 412 h40 M360 446 h40" stroke="#4d7fe0" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
+
+            <g class="castle">
+              <rect x="70" y="190" width="80" height="200" fill="url(#stoneG)"/>
+              <path d="M62 190 h96 v-16 h-12 v8 h-12 v-8 h-12 v8 h-12 v-8 h-12 v8 h-12 v-8 h-12 v8 h-12 v-8 h-12z" fill="#3a4170"/>
+              <path d="M66 174 L110 112 L154 174 Z" fill="url(#roofG)"/>
+              <rect x="450" y="190" width="80" height="200" fill="url(#stoneG)"/>
+              <path d="M442 190 h96 v-16 h-12 v8 h-12 v-8 h-12 v8 h-12 v-8 h-12 v8 h-12 v-8 h-12 v8 h-12 v-8 h-12z" fill="#3a4170"/>
+              <path d="M446 174 L490 112 L534 174 Z" fill="url(#roofG)"/>
+              <rect x="150" y="270" width="300" height="120" fill="url(#stoneD)"/>
+              <path d="M150 270 h300 v-16 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15 v8 h-15 v-8 h-15z" fill="#2c325a"/>
+              <rect x="235" y="130" width="130" height="260" fill="url(#stoneG)"/>
+              <path d="M227 130 h146 v-16 h-14 v8 h-14 v-8 h-14 v8 h-14 v-8 h-14 v8 h-14 v-8 h-14 v8 h-14 v-8 h-14 v8 h-14 v-8 h-14z" fill="#3a4170"/>
+              <path d="M240 114 L300 30 L360 114 Z" fill="url(#roofG)"/>
+              <line x1="300" y1="30" x2="300" y2="6" stroke="#e8b04b" stroke-width="2"/>
+              <path class="flag f1" d="M300 6 q14 4 26 0 q-4 7 0 12 q-12 4 -26 0z" fill="#e8b04b"/>
+              <line x1="110" y1="112" x2="110" y2="92" stroke="#e8b04b" stroke-width="2"/>
+              <path class="flag f2" d="M110 92 q10 3 20 0 q-3 5 0 9 q-10 3 -20 0z" fill="#4d7fe0"/>
+              <line x1="490" y1="112" x2="490" y2="92" stroke="#e8b04b" stroke-width="2"/>
+              <path class="flag f3" d="M490 92 q10 3 20 0 q-3 5 0 9 q-10 3 -20 0z" fill="#4d9c6a"/>
+
+              <g class="windows">
+                <path d="M100 240 v-14 a10 10 0 0 1 20 0 v14z" class="win w1"/>
+                <path d="M100 300 v-14 a10 10 0 0 1 20 0 v14z" class="win w2"/>
+                <path d="M480 240 v-14 a10 10 0 0 1 20 0 v14z" class="win w3"/>
+                <path d="M480 300 v-14 a10 10 0 0 1 20 0 v14z" class="win w2"/>
+                <path d="M285 180 v-20 a15 15 0 0 1 30 0 v20z" class="win w1"/>
+                <path d="M255 240 v-12 a8 8 0 0 1 16 0 v12z" class="win w3"/>
+                <path d="M329 240 v-12 a8 8 0 0 1 16 0 v12z" class="win w1"/>
+                <path d="M190 310 v-10 a7 7 0 0 1 14 0 v10z" class="win w2"/>
+                <path d="M396 310 v-10 a7 7 0 0 1 14 0 v10z" class="win w3"/>
+              </g>
+
+              <path d="M268 390 v-60 a32 32 0 0 1 64 0 v60z" fill="#090b16"/>
+              <g class="portcullis" id="portcullis">
+                <path d="M272 330 h56 M272 345 h56 M272 360 h56 M272 375 h56 M282 300 v90 M294 298 v92 M306 298 v92 M318 300 v90" stroke="#6e6a7d" stroke-width="3"/>
+              </g>
+              <rect class="drawbridge" id="drawbridge" x="266" y="304" width="68" height="86" rx="4" fill="#6b4423" stroke="#3d2614" stroke-width="2"/>
+
+              <g class="torch t1"><rect x="252" y="352" width="4" height="14" fill="#5a3b1d"/><ellipse cx="254" cy="348" rx="5" ry="8" class="flame"/></g>
+              <g class="torch t2"><rect x="344" y="352" width="4" height="14" fill="#5a3b1d"/><ellipse cx="346" cy="348" rx="5" ry="8" class="flame"/></g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="wrap wing-band" id="wingBand" aria-label="The three wings of the Citadel"></div>
+
+      <div class="wrap companions" aria-label="Your royal companions">
+        <p class="eyebrow comp-intro">Your royal companions</p>
+        <div class="comp-grid">
+          <article class="comp-card" data-comp="prince" style="--cc:#4d7fe0">
+            <div class="comp-art" aria-hidden="true">
+              <svg viewBox="0 0 160 200" class="comp-svg">
+                <path d="M28 200 Q26 138 52 116 L108 116 Q134 138 132 200 Z" fill="#4d7fe0"/>
+                <path d="M52 116 L80 170 L108 116 Z" fill="#f6cf7a"/>
+                <path d="M30 150 Q22 178 32 200 L44 200 Q36 176 42 150 Z" fill="#b3263e"/>
+                <rect x="70" y="100" width="20" height="22" fill="#f1c9a0"/>
+                <ellipse cx="80" cy="74" rx="32" ry="36" fill="#f1c9a0"/>
+                <path d="M46 66 Q42 34 80 32 Q118 34 114 66 Q108 48 80 50 Q56 48 46 66 Z" fill="#6b4423"/>
+                <path d="M52 34 L56 12 L68 26 L80 6 L92 26 L104 12 L108 34 Z" fill="#f6cf7a" stroke="#b07c22" stroke-width="2"/>
+                <circle cx="80" cy="22" r="4" fill="#e0485f"/>
+                <circle cx="68" cy="74" r="4" fill="#1b1205"/><circle cx="92" cy="74" r="4" fill="#1b1205"/>
+                <circle cx="60" cy="86" r="4" fill="#e0485f" opacity=".35"/><circle cx="100" cy="86" r="4" fill="#e0485f" opacity=".35"/>
+                <path d="M70 92 Q80 100 90 92" stroke="#8a3b2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="comp-talk">
+              <p class="comp-name">Prince Aldric <span>the Honest</span></p>
+              <p class="comp-greet"></p>
+              <blockquote class="comp-bubble"><p class="comp-line" aria-live="polite"></p></blockquote>
+              <div class="comp-foot"><span class="comp-count"></span><button type="button" class="btn btn-ghost btn-sm comp-next">Another tip</button></div>
+            </div>
+          </article>
+          <article class="comp-card" data-comp="princess" style="--cc:#8b6fd6">
+            <div class="comp-art" aria-hidden="true">
+              <svg viewBox="0 0 160 200" class="comp-svg">
+                <path d="M40 74 Q36 26 80 24 Q124 26 120 74 L128 160 Q80 178 32 160 Z" fill="#c98a3a"/>
+                <path d="M46 116 L114 116 L126 200 L34 200 Z" fill="#8b6fd6"/>
+                <path d="M60 116 L80 140 L100 116 Z" fill="#f6cf7a"/>
+                <rect x="70" y="100" width="20" height="20" fill="#f1c9a0"/>
+                <ellipse cx="80" cy="74" rx="30" ry="34" fill="#f1c9a0"/>
+                <path d="M50 66 Q52 40 80 40 Q108 40 110 66 Q98 52 80 54 Q62 54 50 66 Z" fill="#c98a3a"/>
+                <path d="M56 42 L64 28 L72 38 L80 22 L88 38 L96 28 L104 42 Z" fill="#f6e2a8" stroke="#b07c22" stroke-width="1.5"/>
+                <circle cx="80" cy="34" r="3.5" fill="#4d9c6a"/>
+                <circle cx="68" cy="76" r="4" fill="#1b1205"/><circle cx="92" cy="76" r="4" fill="#1b1205"/>
+                <circle cx="60" cy="88" r="4" fill="#e0485f" opacity=".35"/><circle cx="100" cy="88" r="4" fill="#e0485f" opacity=".35"/>
+                <path d="M70 94 Q80 102 90 94" stroke="#8a3b2a" stroke-width="3" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="comp-talk">
+              <p class="comp-name">Princess Elowen <span>the Wise</span></p>
+              <p class="comp-greet"></p>
+              <blockquote class="comp-bubble"><p class="comp-line" aria-live="polite"></p></blockquote>
+              <div class="comp-foot"><span class="comp-count"></span><button type="button" class="btn btn-ghost btn-sm comp-next">Another tip</button></div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="wrap section" id="journey">
+        <div class="section-head center">
+          <p class="eyebrow">The Journey</p>
+          <h2>Three wings. Eight chambers. One dragon.</h2>
+          <p>The course is organized into three wings: how AI works, how to use AI tools effectively, and how to use AI fairly and honestly. Each chamber contains three reading scrolls, one hands-on activity, and a short quiz. Completing a chamber unlocks the next one.</p>
+        </div>
+        <ol class="journey-grid" id="journeyGrid"></ol>
+      </div>
+
+      <div class="wrap section">
+        <div class="how-grid">
+          <div class="how-card">
+            <span class="how-ico coin-ico" aria-hidden="true"></span>
+            <h3>Earn gold</h3>
+            <p>You earn gold for every scroll you read, every trial you complete, and every correct answer. Gold also raises your rank, from Peasant all the way up to Guardian of the Citadel.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 16.8 6.5 19.5l1-6.3L3 8.9 9 8z"/></svg></span>
+            <h3>Collect honors</h3>
+            <p>Unlock twelve achievements, ranging from Eagle Eye on the archery range to Unscathed in the battle against the dragon.</p>
+          </div>
+          <div class="how-card">
+            <span class="how-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H4z"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="3"/></svg></span>
+            <h3>Print your knighthood</h3>
+            <p>After you defeat Vortigrax, the Hall of Honors creates a personalized certificate that lists your rank and gold. You can print it.</p>
+          </div>
+        </div>
+        <div class="center"><a href="#/map" class="btn btn-gold btn-lg">Open the Castle Map</a></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-map" aria-labelledby="mapTitle">
+      <div class="wrap">
+        <div class="wing-legend" id="wingLegend" aria-label="The three wings of the Citadel"></div>
+        <div class="map-head">
+          <div class="section-head">
+            <p class="eyebrow">The Castle Map</p>
+            <h2 id="mapTitle">Choose your next chamber</h2>
+            <p>The doors that glow are open to you. Completing a chamber breaks the seal on the next one. The dragon waits in the highest keep.</p>
+          </div>
+          <div class="map-progress panel">
+            <div class="mp-row"><span>Chambers conquered</span><strong><span id="mapDone">0</span> / 8</strong></div>
+            <div class="meter"><span id="mapMeter"></span></div>
+            <div class="mp-row"><span>Rank</span><strong id="mapRank">Peasant</strong></div>
+            <div class="wing-progress" id="wingProgress"></div>
+          </div>
+        </div>
+
+        <div class="map-layout">
+          <div class="map-frame">
+            <div class="map-svg" id="mapSvg"></div>
+          </div>
+          <aside class="panel room-panel" id="roomPanel" aria-live="polite">
+            <button type="button" class="sheet-close" id="sheetClose" aria-label="Close">&times;</button>
+            <div class="room-medal" id="rpMedal">I</div>
+            <p class="eyebrow" id="rpTopic">Topic</p>
+            <h3 id="rpName">The Gatehouse</h3>
+            <p class="rp-sub" id="rpSub"></p>
+            <p class="rp-blurb" id="rpBlurb"></p>
+            <ul class="rp-steps" id="rpSteps"></ul>
+            <a class="btn btn-gold btn-block" id="rpGo" href="#/map">Enter</a>
+            <p class="rp-hint" id="rpHint"></p>
+          </aside>
+        </div>
+
+        <h3 class="log-title">Quest Log</h3>
+        <ol class="quest-log" id="questLog"></ol>
+      </div>
+    </section>
+
+    <section class="view" id="view-chamber" aria-labelledby="chName">
+      <div class="chamber-banner" id="chBanner">
+        <div class="wrap chamber-banner-inner">
+          <a href="#/map" class="back-link"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Castle Map</a>
+          <div class="ch-medal" id="chMedal">I</div>
+          <div class="ch-titles">
+            <p class="eyebrow" id="chTopic">Topic</p>
+            <h1 id="chName">Chamber</h1>
+          </div>
+          <div class="ch-progress"><span id="chProgText">0 of 5 complete</span><div class="meter"><span id="chMeter"></span></div></div>
+        </div>
+      </div>
+      <div class="wrap chamber-wrap">
+        <nav class="ch-tabs" id="chTabs" aria-label="Chamber sections"></nav>
+        <div class="ch-stage" id="chStage" aria-live="polite"></div>
+        <div class="ch-nav">
+          <button type="button" class="btn btn-ghost" id="chPrev">&larr; Previous</button>
+          <button type="button" class="btn btn-gold" id="chNext">Next &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-dragon" aria-labelledby="dragonTitle">
+      <div class="wrap">
+        <div class="section-head center">
+          <p class="eyebrow ember">The Highest Keep</p>
+          <h2 id="dragonTitle">The Siege of Vortigrax</h2>
+          <p>The Dragon of False Information circles the keep. Each of his attacks is a lie about AI. Answer the question correctly to counter the attack, and your knowledge will defeat him.</p>
+        </div>
+
+        <div class="panel dragon-gate" id="dragonGate">
+          <div class="dg-art" aria-hidden="true">
+            <svg viewBox="0 0 200 140"><path d="M20 110 q40-70 80-40 q20-50 60-40 q-20 10-24 30 q30-10 44 10 q-30-4-44 14 q10 20-6 40 q-6-24-30-24 q-30 20-80 10z" fill="#b3263e"/><circle cx="150" cy="44" r="4" fill="#f6cf7a"/></svg>
+          </div>
+          <div class="dg-text">
+            <h3 id="dgTitle">The keep is sealed</h3>
+            <p id="dgText">Complete all eight chambers to break the final seal.</p>
+            <ul class="dg-rules">
+              <li>Vortigrax attacks with one lie from each chamber you have completed.</li>
+              <li>Choose the correct counter-spell to strike him. Three correct answers in a row land a critical hit.</li>
+              <li>A wrong answer, or running out of time, breaks one of your three shields.</li>
+            </ul>
+            <label class="toggle"><input type="checkbox" id="timerToggle" checked> <span>Use the 30-second spell timer</span></label>
+            <div class="btn-row">
+              <button type="button" class="btn btn-ember btn-lg" id="battleStart">Enter the Keep</button>
+              <a class="btn btn-ghost btn-lg" href="#/map" id="dgBack">Back to the map</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel battle" id="battle" hidden>
+          <div class="battle-hud">
+            <div class="hud-side">
+              <span class="hud-label">Your shields</span>
+              <div class="shields" id="shields"></div>
+            </div>
+            <div class="hud-side right">
+              <span class="hud-label">Vortigrax</span>
+              <div class="hpbar"><span id="dragonHp"></span></div>
+            </div>
+          </div>
+          <div class="arena">
+            <canvas id="battleCanvas" aria-label="Battle scene on the castle battlements"></canvas>
+            <div class="attack-banner" id="attackBanner"><span id="attackName">Attack</span><small id="attackDesc"></small></div>
+            <div class="timer-ring" id="timerRing" hidden><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="tr-bg"/><circle cx="20" cy="20" r="17" class="tr-fg" id="timerArc"/></svg><span id="timerNum">30</span></div>
+            <div class="streak" id="streak" hidden></div>
+          </div>
+          <h3 class="spell-q" id="spellQ">Question</h3>
+          <div class="spells" id="spells"></div>
+          <p class="battle-log" id="battleLog" aria-live="polite"></p>
+        </div>
+
+        <div class="panel battle-end" id="battleEnd" hidden>
+          <div class="be-icon" id="beIcon"></div>
+          <h3 id="beTitle">Victory</h3>
+          <p id="beText"></p>
+          <div class="btn-row center" id="beActions"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-lab" aria-labelledby="labTitle">
+      <div class="wrap">
+        <div class="lab-top">
+          <div class="section-head">
+            <p class="eyebrow">The AI Lab</p>
+            <h2 id="labTitle">See how AI works, live</h2>
+            <p>The Citadel's alchemists built eight interactive models. Drag, click, and slide them to watch AI learn, make decisions, and make mistakes. Each model has a goal worth 15 gold.</p>
+          </div>
+          <div class="panel lab-progress">
+            <div class="mp-row"><span>Your progress</span><strong id="labCount">0 of 8 models explored</strong></div>
+            <div class="meter"><span id="labMeter"></span></div>
+          </div>
+        </div>
+        <div class="lab-picker" id="labPicker"></div>
+        <div class="panel lab-panel" id="labPanel"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-lexicon" aria-labelledby="lexTitle">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">The Lexicon</p>
+          <h2 id="lexTitle">Words to know</h2>
+          <p>Every key term from the eight chambers, explained in plain language. Click a word to reveal its meaning.</p>
+        </div>
+        <div class="lex-tools">
+          <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="lexSearch" placeholder="Search the lexicon" aria-label="Search the lexicon"></label>
+          <div class="lex-filter" id="lexFilter"></div>
+        </div>
+        <div class="lex-grid" id="lexGrid"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-honors" aria-labelledby="honTitle">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">The Hall of Honors</p>
+          <h2 id="honTitle">Your legend so far</h2>
+        </div>
+
+        <div class="honors-top">
+          <div class="panel rank-card">
+            <div class="rank-seal" id="rankSeal"></div>
+            <div>
+              <span class="hud-label">Current rank</span>
+              <h3 id="honRank">Peasant</h3>
+              <p id="honNext">100 gold to Page</p>
+              <div class="meter"><span id="honMeter"></span></div>
+            </div>
+            <div class="rank-gold"><span class="coin big" aria-hidden="true"></span><strong id="honGold">0</strong><small>gold</small></div>
+          </div>
+          <div class="panel">
+            <span class="hud-label">Chamber crests</span>
+            <div class="crest-row" id="crestRow"></div>
+          </div>
+        </div>
+
+        <h3 class="sub-title">Achievements</h3>
+        <div class="ach-grid" id="achGrid"></div>
+
+        <h3 class="sub-title" id="certHeading">Certificate of Knighthood</h3>
+        <div class="cert-controls panel">
+          <label for="certName">Name for your certificate</label>
+          <div class="cert-row">
+            <input type="text" id="certName" maxlength="40" placeholder="Your name" autocomplete="name">
+            <button type="button" class="btn btn-gold" id="printBtn">Print certificate</button>
+          </div>
+          <p class="cert-note" id="certNote">Your certificate unlocks after you defeat Vortigrax.</p>
+        </div>
+
+        <div class="cert-stage" id="certStage">
+          <div class="certificate" id="certificate">
+            <div class="cert-border">
+              <div class="cert-corner tl"></div><div class="cert-corner tr"></div><div class="cert-corner bl"></div><div class="cert-corner br"></div>
+              <p class="cert-kicker">Nexus Citadel · Academy of Artificial Intelligence</p>
+              <h2 class="cert-title">Certificate of Knighthood</h2>
+              <p class="cert-small">Let it be known throughout the realm that</p>
+              <p class="cert-name" id="certNameOut">Your Name</p>
+              <p class="cert-body">has completed all three wings of the Citadel, mastering the foundations of artificial intelligence, the practical tools and techniques for using it well, and the ethics of using it honorably, and has defeated <strong>Vortigrax, the Dragon of False Information</strong>.</p>
+              <div class="cert-stats">
+                <div><span>Rank</span><strong id="certRank">Knight</strong></div>
+                <div><span>Gold earned</span><strong id="certGold">0</strong></div>
+                <div><span>Honors</span><strong id="certAch">0 / 11</strong></div>
+              </div>
+              <div class="cert-foot">
+                <div class="cert-sign"><span class="sig">Archivist of the Citadel</span><span class="line"></span><small>Grand Archivist</small></div>
+                <svg class="cert-seal" viewBox="0 0 120 120" aria-hidden="true">
+                  <circle cx="60" cy="60" r="54" fill="#9c1f33"/><circle cx="60" cy="60" r="44" fill="none" stroke="#e8b04b" stroke-width="2" stroke-dasharray="3 4"/>
+                  <path d="M38 76 V58 h6 v6 h6 v-10 h20 v10 h6 v-6 h6 V76 Z" fill="#f6cf7a"/><circle cx="60" cy="44" r="4" fill="#f6cf7a"/>
+                </svg>
+                <div class="cert-sign"><span class="sig" id="certDate">October 19, 2026</span><span class="line"></span><small>Date of knighting</small></div>
+              </div>
+            </div>
+          </div>
+          <div class="cert-lock" id="certLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>Defeat Vortigrax to unseal your certificate</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-refs" aria-labelledby="refTitle">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">The Archive</p>
+          <h2 id="refTitle">References</h2>
+          <p>All sources of information used to create this website, our copyright and permissions record, and our required TSA documents.</p>
+        </div>
+        <div class="refs-layout">
+          <div class="panel">
+            <h3 class="ref-h">Required TSA Documents</h3>
+            <h4 class="ref-h" style="font-size:1rem">Student Copyright Checklist</h4>
+            <iframe class="pdf-view" src="student-copyright-checklist.pdf" title="Student Copyright Checklist (PDF)" loading="lazy" style="display:block;width:100%;height:min(70vh,620px);min-height:380px;border:1px solid rgba(232,176,75,.35);border-radius:10px;background:#fff"></iframe>
+            <p class="ref-p" style="font-size:.9rem">If the preview does not show on your device, <a href="student-copyright-checklist.pdf" target="_blank" rel="noopener">open the PDF</a>.</p>
+            <h4 class="ref-h" style="font-size:1rem">Resources and AI Reflection</h4>
+            <iframe class="pdf-view" src="resources-ai-reflection.pdf" title="Resources and AI Reflection (PDF)" loading="lazy" style="display:block;width:100%;height:min(70vh,620px);min-height:380px;border:1px solid rgba(232,176,75,.35);border-radius:10px;background:#fff"></iframe>
+            <p class="ref-p" style="font-size:.9rem">If the preview does not show on your device, <a href="resources-ai-reflection.pdf" target="_blank" rel="noopener">open the PDF</a>.</p>
+            <h3 class="ref-h">How this site was built</h3>
+            <ul class="ref-plain">
+              <li><strong>Code:</strong> hand-written HTML5, CSS3, and vanilla JavaScript. No web frameworks or website builders were used. AI (Gemini) was used in aid for the complex parts and for ideas/learning concepts purposes. This is our original work.</li>
+              <li><strong>Writing and AI use:</strong> AI (Gemini) helped come up with ideas for the trial, quiz, content, interface elements, and dragon battle. In the end, all the work was done by the students.</li>
+              <li><strong>Art:</strong> the castle, map, characters, dragon, icons, diagrams, and certificate are original SVG, CSS, and HTML Canvas drawings made by our team. No stock or copyrighted images are used.</li>
+              <li><strong>Fonts:</strong> Cinzel, Cinzel Decorative, Alegreya, Alegreya Sans, IBM Plex Mono, and Pinyon Script from Google Fonts, licensed under the SIL Open Font License 1.1.</li>
+              <li><strong>Sound:</strong> every sound effect is generated live with the Web Audio API. No audio files are used.</li>
+              <li><strong>Privacy:</strong> progress is saved only in your own browser (localStorage). No accounts are created and no data is collected.</li>
+            </ul>
+            <h3 class="ref-h">Copyright &amp; permissions</h3>
+            <p class="ref-p">This site contains no copyrighted text, images, or audio from other creators, so no written permissions were required.</p>
+          </div>
+          <div class="panel">
+            <h3 class="ref-h">Sources of Information (APA 7th edition)</h3>
+            <ol class="ref-apa">
+              <li>Barocas, S., Hardt, M., &amp; Narayanan, A. (2023). <em>Fairness and machine learning: Limitations and opportunities</em>. MIT Press. <a href="https://fairmlbook.org" target="_blank" rel="noopener">https://fairmlbook.org</a></li>
+              <li>Bolukbasi, T., Chang, K.-W., Zou, J., Saligrama, V., &amp; Kalai, A. (2016). Man is to computer programmer as woman is to homemaker? Debiasing word embeddings. <em>Advances in Neural Information Processing Systems, 29</em>. <a href="https://arxiv.org/abs/1607.06520" target="_blank" rel="noopener">https://arxiv.org/abs/1607.06520</a></li>
+              <li>Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J., Dhariwal, P., et al. (2020). Language models are few-shot learners. <em>Advances in Neural Information Processing Systems, 33</em>. <a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">https://arxiv.org/abs/2005.14165</a></li>
+              <li>Buolamwini, J., &amp; Gebru, T. (2018). Gender shades: Intersectional accuracy disparities in commercial gender classification. <em>Proceedings of Machine Learning Research, 81</em>, 77–91. <a href="https://proceedings.mlr.press/v81/buolamwini18a.html" target="_blank" rel="noopener">https://proceedings.mlr.press/v81/buolamwini18a.html</a></li>
+              <li>Campbell, M., Hoane, A. J., Jr., &amp; Hsu, F.-h. (2002). Deep Blue. <em>Artificial Intelligence, 134</em>(1–2), 57–83. <a href="https://doi.org/10.1016/S0004-3702(01)00129-1" target="_blank" rel="noopener">https://doi.org/10.1016/S0004-3702(01)00129-1</a></li>
+              <li>Caulfield, M. (2019, June 19). <em>SIFT (the four moves)</em>. Hapgood. <a href="https://hapgood.us/2019/06/19/sift-the-four-moves/" target="_blank" rel="noopener">https://hapgood.us/2019/06/19/sift-the-four-moves/</a></li>
+              <li>Coalition for Content Provenance and Authenticity. (n.d.). <em>C2PA: Content credentials</em>. <a href="https://c2pa.org" target="_blank" rel="noopener">https://c2pa.org</a></li>
+              <li>Dastin, J. (2018, October 10). Amazon scraps secret AI recruiting tool that showed bias against women. <em>Reuters</em>. <a href="https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK08G" target="_blank" rel="noopener">https://www.reuters.com/article/us-amazon-com-jobs-automation-insight-idUSKCN1MK08G</a></li>
+              <li>Dunlosky, J., Rawson, K. A., Marsh, E. J., Nathan, M. J., &amp; Willingham, D. T. (2013). Improving students' learning with effective learning techniques: Promising directions from cognitive and educational psychology. <em>Psychological Science in the Public Interest, 14</em>(1), 4–58. <a href="https://doi.org/10.1177/1529100612453266" target="_blank" rel="noopener">https://doi.org/10.1177/1529100612453266</a></li>
+              <li>Google. “Gemini.” Gemini.Google.Com, 2024, https://gemini.google.com.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Primary (mobile)">
+    <a href="#/home" data-route="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V10l8-6 8 6v11h-5v-6H9v6z"/></svg>Home</a>
+    <a href="#/map" data-route="map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V9h3V6h3v3h4V6h3v3h3v12z"/><path d="M10 21v-5h4v5"/></svg>Map</a>
+    <a href="#/lab" data-route="lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></svg>Lab</a>
+    <a href="#/lexicon" data-route="lexicon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>Lexicon</a>
+    <a href="#/honors" data-route="honors"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v6a4 4 0 0 1-8 0z"/><path d="M8 5H4a4 4 0 0 0 4 4M16 5h4a4 4 0 0 1-4 4M12 13v4M8 21h8"/></svg>Honors</a>
+    <a href="#/refs" data-route="refs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></svg>Sources</a>
+  </nav>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <footer class="footer">
+    <span><strong>Nexus Citadel</strong> · An Academy of Artificial Intelligence · TSA Webmaster</span>
+    <a href="#/refs">References &amp; Sources</a>
+  </footer>
+
+  <script src="content.js"></script>
+  <script src="script.js"></script>
+  <script src="lab.js"></script>
+  <script>
+
+    window.addEventListener("load", function () {
+      var missing = [];
+      if (typeof CHAMBERS === "undefined") missing.push("content.js");
+      if (typeof router === "undefined") missing.push("script.js");
+      if (typeof lab === "undefined") missing.push("lab.js");
+      if (!missing.length) return;
+      var box = document.createElement("div");
+      box.setAttribute("role", "alert");
+      box.style.cssText = "max-width:640px;margin:60px auto;padding:24px 28px;border-radius:14px;background:#2a1d10;border:2px solid #e8b04b;color:#f5ead0;font:18px/1.6 sans-serif";
+      box.innerHTML = "<strong style='color:#f6cf7a'>The Citadel could not load.</strong><br>The browser could not find: <b>" + missing.join(", ") +
+        "</b>.<br>Make sure index.html, style.css, content.js, script.js, and lab.js are all in the same folder, with those exact names.";
+      document.getElementById("main").prepend(box);
+    });
+  </script>
+</body>
+</html>
